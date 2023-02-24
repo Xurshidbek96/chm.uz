@@ -1,500 +1,240 @@
 @extends('admin.layouts.layout')
 
-
-
-@section('products')
-
-    active
-
+@section('css')
+    <link rel="stylesheet" href="/admin/assets/bundles/select2/dist/css/select2.min.css">
+    <link rel="stylesheet" href="/admin/assets/bundles/jquery-selectric/selectric.css">
 @endsection
 
-
+@section('products')
+    active
+@endsection
 
 @section('content')
 
 
-
-
-
 @if ($errors->any())
-
     <div class="alert alert-danger">
-
         <strong>Whoops!</strong> There were some problems with your input.<br><br>
-
         <ul>
-
             @foreach ($errors->all() as $error)
-
                 <li>{{ $error }}</li>
-
             @endforeach
-
         </ul>
-
     </div>
-
 @endif
 
-    <!-- MAIN -->
-
-        <main>
-
-
-
-            <div class="table-data">
-
-                <div class="order">
-
-                    <div class="head">
-
-                        <h3>Mahsulot qo'shish</h3>
-
-                        <a class="create__btn" href="{{route('products.index')}}"> <i class='bx bx-arrow-back'></i>Qaytish</a>
-
-                        
-
-                    </div>
-
-
-
-                    <form class="create__inputs" action="{{route('products.store')}}" method="POST" enctype="multipart/form-data">
-
-                        @csrf
-
-                        <strong>Nomi Uz :</strong>
-
-                        <input type="text" name="name_uz" class="form-control"> <br>
-
-
-
-                        <strong>Nomi Ru :</strong>
-
-                        <input type="text" name="name_ru" class="form-control"> <br>
-
-                        <strong>Nomi Eng :</strong>
-
-                        <input type="text" name="name_en" class="form-control"> <br>
-
-
-
-                        <strong> Kategoriyasi :</strong>
-
-
-
-                        <select name="category" class="form-control">
-
-                            @foreach($category as $c)
-                            <option value="{{$c->id}}">{{$c->id}}. {{$c->name_uz}}</option>
-                            @endforeach
-
-                        </select> <br>
-
-
-
-                        <strong>Product :</strong>
-
-                        <input type="text" name="product" class="form-control"> <br>
-
-
-
-                        <strong>Model :</strong>
-
-                        <input type="text" name="model" class="form-control"> <br>
-
-
-
-                        <strong>Narxi So'mda :</strong>
-
-                        <input type="text" name="price_sum" class="form-control"> <br>
-
-
-
-                        <strong>Narxi $ USD :</strong>
-
-                        <input type="text" name="price_usd" class="form-control"> <br>
-
-
-
-                        <strong>Qisqa ma'lumot Uz :</strong>
-
-                        <input type="text" name="title_uz" class="form-control"> <br>
-
-
-
-                        <strong>Qisqa ma'lumot Ru :</strong>
-
-                        <input type="text" name="title_ru" class="form-control"> <br>
-
-                        <strong>Qisqa ma'lumot Eng :</strong>
-
-                        <input type="text" name="title_en" class="form-control"> <br>
-
-
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea"><b>Parametr UZ</b></label>
-
-                        <textarea id="mytextarea" name="parameter_uz"></textarea>
-
-                        </div> <br>
-
-
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea1"><b>Parametr Ru</b></label>
-
-                        <textarea id="mytextarea1" name="parameter_ru"></textarea>
-
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea13"><b>Parametr Eng</b></label>
-
-                        <textarea id="mytextarea13" name="parameter_en"></textarea>
-
-                        </div> <br>
-
-
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea2"><b>Qo'shimcha ma'lumot UZ</b></label>
-
-                        <textarea id="mytextarea2" name="info_uz"></textarea>
-
-                        </div> <br>
-
-
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea3"><b>Qo'shimcha ma'lumot Ru</b></label>
-
-                        <textarea id="mytextarea3" name="info_ru"></textarea>
-
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea14"><b>Qo'shimcha ma'lumot Eng</b></label>
-
-                        <textarea id="mytextarea14" name="info_en"></textarea>
-
-                        </div> <br>
-
-
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea4"><b>Tavsif UZ</b></label>
-
-                        <textarea id="mytextarea4" name="description_uz"></textarea>
-
-                        </div> <br>
-
- 
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea5"><b>Tavsif Ru</b></label>
-
-                        <textarea id="mytextarea5" name="description_ru"></textarea>
-
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea15"><b>Tavsif Eng</b></label>
-
-                        <textarea id="mytextarea15" name="description_en"></textarea>
-
-                        </div> <br>
-
-
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea6"><b>Yetkazib berish UZ</b></label>
-
-                        <textarea id="mytextarea6" name="delivery_uz"></textarea>
-
-                        </div> <br>
-
-
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea7"><b>Yetkazib berish Ru</b></label>
-
-                        <textarea id="mytextarea7" name="delivery_ru"></textarea>
-
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea16"><b>Yetkazib berish Eng</b></label>
-
-                        <textarea id="mytextarea16" name="delivery_en"></textarea>
-
-                        </div> <br>
-
-
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea8"><b>To'lov UZ</b></label>
-
-                        <textarea id="mytextarea8" name="payment_uz"></textarea>
-
-                        </div> <br>
-
-
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea9"><b>To'lov Ru</b></label>
-
-                        <textarea id="mytextarea9" name="payment_ru"></textarea>
-
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea17"><b>To'lov Eng</b></label>
-
-                        <textarea id="mytextarea17" name="payment_en"></textarea>
-
-                        </div> <br>
-
-
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea10"><b>Kafolat UZ</b></label>
-
-                        <textarea id="mytextarea10" name="warranty_uz"></textarea>
-
-                        </div> <br>
-
-
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea11"><b>Kafolat Ru</b></label>
-
-                        <textarea id="mytextarea11" name="warranty_ru"></textarea>
-
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-
-                        <label for="mytextarea18"><b>Kafolat Eng</b></label>
-
-                        <textarea id="mytextarea18" name="warranty_en"></textarea>
-
-                        </div> <br>
-
-
-
-                        <strong>Video 1 :</strong>
-
-                        <input type="text" name="video1" class="form-control"> <br>
-
-
-
-                        <strong>Video 2 :</strong>
-
-                        <input type="text" name="video2" class="form-control"> <br>
-
-
-
-                        <strong>Video 3 :</strong>
-
-                        <input type="text" name="video3" class="form-control"> <br>
-
-
-
-                        <strong>Rasm 1</strong>
-
-                        <input type="file" name="img1" class="form-control"> <br>
-
-
-
-                        <strong>Rasm 2</strong>
-
-                        <input type="file" name="img2" class="form-control"> <br>
-
-
-
-                        <strong>Rasm 3</strong>
-
-                        <input type="file" name="img3" class="form-control"> <br>
-
-
-
-                        <strong>Rasm 4</strong>
-
-                        <input type="file" name="img4" class="form-control"> <br>
-
-
-
-                        <strong>Rasm 5</strong>
-
-                        <input type="file" name="img5" class="form-control"> <br>
-
-
-
-                        <input type="submit" value="Submit">
-
-                    </form>
-
-                </div>
-
-                
-
+<section class="section">
+    <div class="section-body">
+
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h4>Add Product</h4>
             </div>
-
-        </main>
-
-        <!-- MAIN -->
-
-
-
-        <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-
-<script>
-
-      tinymce.init({
-
-        selector: '#mytextarea'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea1'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea2'
-
-      });
-
-
-
-      tinymce.init({
-
-        selector: '#mytextarea3'
-
-      });
-
-
-
-      tinymce.init({
-
-        selector: '#mytextarea4'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea5'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea6'
-
-      });
-
-
-
-      tinymce.init({
-
-        selector: '#mytextarea7'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea8'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea9'
-
-      });
-
-
-
-      tinymce.init({
-
-        selector: '#mytextarea10'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea11'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea12'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea13'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea14'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea15'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea16'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea17'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea18'
-
-      });
-
+            <div class="card-body">
+              <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+
+              <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Name Uz</label>
+                <div class="col-sm-12 col-md-7">
+                  <input type="text" class="form-control @error('name_uz') is-invalid
+                  @enderror" name="name_uz" value="{{ old('name_uz') }}">
+                   @error('name_uz') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Name En</label>
+                <div class="col-sm-12 col-md-7">
+                  <input type="text" class="form-control @error('name_en') is-invalid
+                  @enderror" name="name_en" value="{{ old('name_en') }}">
+                   @error('name_en') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                </div>
+              </div>
+
+                {{-- <div class="form-group row mb-4">
+                      <div class="control-label col-form-label text-md-right col-12 col-md-3 col-lg-3">Special</div>
+                      <label class="custom-switch mt-2">
+                        <input type="checkbox" name="special" value="1" class="custom-switch-input">
+                        <span class="custom-switch-indicator"></span>
+                      </label>
+                </div> --}}
+
+
+              <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Katgoriyasi</label>
+                <div class="col-sm-12 col-md-7">
+                  <select class="form-control selectric" name="category_id">
+                    @foreach ($categories as $item)
+                        <option value="{{ $item->id }}">{{ $item->name_uz }}</option>
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Product Uz</label>
+                <div class="col-sm-12 col-md-7">
+                  <input type="text" class="form-control @error('product_uz') is-invalid
+                  @enderror" name="product_uz" value="{{ old('product_uz') }}">
+                   @error('product_uz') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Product En</label>
+                <div class="col-sm-12 col-md-7">
+                  <input type="text" class="form-control @error('product_en') is-invalid
+                  @enderror" name="product_en" value="{{ old('product_en') }}">
+                   @error('product_en') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Price UZS</label>
+                <div class="col-sm-12 col-md-7">
+                  <input type="text" class="form-control @error('price_uzs') is-invalid
+                  @enderror" name="price_uzs" value="{{ old('price_uzs') }}">
+                   @error('price_uzs') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Price USD</label>
+                <div class="col-sm-12 col-md-7">
+                  <input type="text" class="form-control @error('price_usd') is-invalid
+                  @enderror" name="price_usd" value="{{ old('price_usd') }}">
+                   @error('price_usd') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Title Uz</label>
+                <div class="col-sm-12 col-md-7">
+                  <input type="text" class="form-control @error('title_uz') is-invalid
+                  @enderror" name="title_uz" value="{{ old('title_uz') }}">
+                   @error('title_uz') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Title En</label>
+                <div class="col-sm-12 col-md-7">
+                  <input type="text" class="form-control @error('title_en') is-invalid
+                  @enderror" name="title_en" value="{{ old('title_en') }}">
+                   @error('title_en') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Description UZ</label>
+                <div class="col-sm-12 col-md-7">
+                  <textarea class="form-control @error('description_uz') is-invalid
+                  @enderror" name="description_uz" value="{{ old('description_uz') }}"></textarea>
+                  @error('description_uz') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Description En</label>
+                <div class="col-sm-12 col-md-7">
+                    <textarea class="form-control @error('description_en') is-invalid
+                    @enderror" name="description_en" value="{{ old('description_en') }}"></textarea>
+                  @error('description_en') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Images 1</label>
+                <div class="col-sm-12 col-md-7">
+                  <div id="image-preview" class="image-preview">
+                    <label for="image-upload" id="image-label">Rasmni tanlang</label>
+                    <input type="file" name="img1" id="image-upload" />
+                  </div>
+                  @error('img1') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Images 2</label>
+                <div class="col-sm-12 col-md-7">
+                  <div id="image-preview" class="image-preview">
+                    <label for="image-upload" id="image-label">Rasmni tanlang</label>
+                    <input type="file" name="img2" id="image-upload" />
+                  </div>
+                  @error('img2') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Images 3</label>
+                <div class="col-sm-12 col-md-7">
+                  <div id="image-preview" class="image-preview">
+                    <label for="image-upload" id="image-label">Rasmni tanlang</label>
+                    <input type="file" name="img3" id="image-upload" />
+                  </div>
+                  @error('img3') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Images 4</label>
+                <div class="col-sm-12 col-md-7">
+                  <div id="image-preview" class="image-preview">
+                    <label for="image-upload" id="image-label">Rasmni tanlang</label>
+                    <input type="file" name="img4" id="image-upload" />
+                  </div>
+                  @error('img4') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Images 5</label>
+                <div class="col-sm-12 col-md-7">
+                  <div id="image-preview" class="image-preview">
+                    <label for="image-upload" id="image-label">Rasmni tanlang</label>
+                    <input type="file" name="img5" id="image-upload" />
+                  </div>
+                  @error('img5') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                </div>
+              </div>
+
+              <div class="form-group row mb-4">
+                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
+                <div class="col-sm-12 col-md-7">
+                  <button class="btn btn-primary">Submit</button>
+                </div>
+              </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+@endsection
+
+@section('js')
+    <script src="//cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
+    {{--
+    <script>
+        $('ckeditor').ckeditor();
+    </script> --}}
+
+    <script>
+        CKEDITOR.replace('description_uz', {
+        filebrowserUploadUrl: "{{route('admin.upload', ['_token' => csrf_token() ])}}",
+        filebrowserUploadMethod: 'form'
+        });
+        CKEDITOR.replace('description_en', {
+        filebrowserUploadUrl: "{{route('admin.upload', ['_token' => csrf_token() ])}}",
+        filebrowserUploadMethod: 'form'
+        });
     </script>
-
-
-
-
-
+    <script src="/admin/assets/bundles/select2/dist/js/select2.full.min.js"></script>
 @endsection
 

@@ -185,7 +185,6 @@
     var heroSlider = new Swiper('.hero-slider', {
         slidesPerView: 1,
         effect: "slide",
-        loop:true,
         speed: 1500,
         autoplay: {
             delay: 4000,
@@ -207,7 +206,6 @@
         slidesPerView: 5,
         spaceBetween: 0,
         speed: 500,
-        loop:true,
 
         navigation: {
             nextEl: '.swiper-button-next',
@@ -240,7 +238,6 @@
       slidesPerView: 4,
       spaceBetween: 20,
       speed: 500,
-      loop:true,
 
       navigation: {
           nextEl: '.text__nav--next',
@@ -276,7 +273,6 @@
       slidesPerView: 1,
       spaceBetween: 0,
       speed: 500,
-      loop:true,
 
       navigation: {
           nextEl: '.swiper-button-next ',
@@ -311,7 +307,6 @@
     var productCategorySlider = new Swiper('.product-category-slider', {
         slidesPerView: 5,
         spaceBetween: 30,
-        loop:true,
         speed: 400,
         breakpoints: {
             0: {
@@ -677,9 +672,8 @@
           autoplay:{
             delay:3000,
           },
-          loop:true,
           slidesPerView: 5,
-          slidesPerGroup:1,
+          slidesPerGroup:6,
           spaceBetween:20,
           slidesPerColumn: 1,
           slidesPerColumnFill: 'row',

@@ -5,64 +5,77 @@ active
 @endsection
 
 @section('content')
+<section class="section">
+    <div class="section-body">
+      <div class="row">
+        <div class="col-12">
+            @if ($message = Session::get('success'))
+                <div class="alert alert-success">
 
-<!-- MAIN -->
-		<main>
-			
+                    <p>{{ $message }}</p>
+                </div>
+            @endif
+          <div class="card">
+            <div class="card-header">
+              <h4>Categories</h4>
+              <a href="{{ route('categories.create') }}" class="btn btn-primary" style="position:absolute; right:50;">Create</a>
+            </div>
 
-			@if ($message = Session::get('success'))
-        		<div class="alert alert-success">
-            		<p>{{ $message }}</p>
-        		</div>
-    		@endif
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-striped" id="table-1">
+                  <thead>
+                    <tr>
+                      <th class="text-center">
+                        #
+                      </th>
+                      <th>Name UZ</th>
+                      <th>Name En</th>
+                      <th>Image</th>
+                      <th>Slug</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @if (count($categories) == 0)
+					    <tr>
+					        <td colspan="5" class="h5 text-center text-muted">Ma'lumot qo'shilmagan</td>
+					    </tr>
+					@endif
 
-			<div class="table-data">
-				<div class="order">
-					<div class="head">
-						<h3>Kategoriya</h3>
-						<a class="create__btn" href="{{route('categories.create')}}"> <i class='bx bxs-folder-plus'></i>Yaratish</a>
-						
-					</div>
-					<table>
-						<thead>
-							<tr>
-								<th>№</th>
-								<th>Nomi Uz</th>
-								<th>Rasmi</th>
-								<th>Action</th>
-							</tr>
-						</thead>
-						<tbody>
-							@if (count($category) == 0)
-					          <tr>
-					            <td colspan="5" class="h5 text-center text-muted">Ma'lumot kiritilmagan</td>
-					          </tr>
-					        @endif
-					        @foreach($category as $p)
-								<tr>
-									<td>{{++$loop->index}}</td>
-									<td>{{$p->name_uz}}</td>
-									<td><img src="{{URL::to($p->img)}}" width="200px"></td>
-									<td>
-										<form action="{{ route('categories.destroy',$p->id) }}" method="POST">
+                    @foreach($categories as $item)
+                      <tr>
+                        <td>
+                          {{ ++$loop->index }}
+                        </td>
+                        <td>{{ $item->name_uz }}</td>
+                        <td>{{ $item->name_en }}</td>
+                        <td>
+                            <img alt="image" src="/images/{{ $item->img }}" width="59">
+                        </td>
+                        <td>{{ $item->slug }}</td>
+                        <td>
+                            <form action="{{ route('categories.destroy', $item->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                            <a href="{{ route('categories.show', $item->id) }}" class="btn btn-info"><ion-icon class="fas fa-info-circle"></ion-icon></a>
+                            <a href="{{ route('categories.edit', $item->id) }}" class="btn btn-primary"><ion-icon class="far fa-edit"></ion-icon></a>
+                            <button class="btn btn-danger" onclick="return confirm('Rostdan o`chirmoqchimisiz ?')"><ion-icon class="fas fa-times"></ion-icon></button>
+                            </form>
+                        </td>
 
-						                    <a class="btn btn-primary" href="{{ route('categories.edit',$p->id) }}"><ion-icon name="create-outline"></ion-icon></a>
+                      </tr>
+                    @endforeach
 
-						                    @csrf
-						                    @method('DELETE')
-
-						                    <button type="submit" class="btn btn-danger"><ion-icon name="trash-outline"></ion-icon></button>
-					                	</form>
-					            	</td>
-								</tr>
-							@endforeach
-						</tbody>
-					</table>
-					{{$category->links()}}
-				</div>
-				
-			</div>
-		</main>
-		<!-- MAIN -->
+                  </tbody>
+                </table>
+                {{ $categories->links() }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
 @endsection

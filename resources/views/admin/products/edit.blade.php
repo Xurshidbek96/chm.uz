@@ -1,5 +1,10 @@
 @extends('admin.layouts.layout')
 
+@section('css')
+    <link rel="stylesheet" href="/admin/assets/bundles/select2/dist/css/select2.min.css">
+    <link rel="stylesheet" href="/admin/assets/bundles/jquery-selectric/selectric.css">
+@endsection
+
 @section('products')
     active
 @endsection
@@ -7,290 +12,238 @@
 @section('content')
 
 
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <strong>Whoops!</strong> There were some problems with your input.<br><br>
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-    <!-- MAIN -->
-        <main>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-            <div class="table-data">
-                <div class="order">
-                    <div class="head">
-                        <h3>O'zgartirish</h3>
-                        <a class="create__btn" href="{{route('products.index')}}"> <i class='bx bx-arrow-back'></i>Back</a>
-                        
+    <section class="section">
+        <div class="section-body">
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Edit</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ route('products.update', $product->id) }}" method="POST"
+                                enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
+
+                                <div class="form-group row mb-4">
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Name Uz</label>
+                                    <div class="col-sm-12 col-md-7">
+                                      <input type="text" class="form-control @error('name_uz') is-invalid
+                                      @enderror" name="name_uz" value="{{ $product->name_uz }}">
+                                       @error('name_uz') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row mb-4">
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Name En</label>
+                                    <div class="col-sm-12 col-md-7">
+                                      <input type="text" class="form-control @error('name_en') is-invalid
+                                      @enderror" name="name_en" value="{{  $product->name_en }}">
+                                       @error('name_en') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                                    </div>
+                                  </div>
+
+                                    {{-- <div class="form-group row mb-4">
+                                          <div class="control-label col-form-label text-md-right col-12 col-md-3 col-lg-3">Special</div>
+                                          <label class="custom-switch mt-2">
+                                            <input type="checkbox" name="special" value="1" class="custom-switch-input">
+                                            <span class="custom-switch-indicator"></span>
+                                          </label>
+                                    </div> --}}
+
+
+                                  <div class="form-group row mb-4">
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Category</label>
+                                    <div class="col-sm-12 col-md-7">
+                                      <select class="form-control selectric" name="category_id">
+                                        <option value="{{ $product->category_id }}"> {{ $product->category->name_uz }}</option>
+                                        @foreach ($categories as $item)
+                                            @if($product->category_id != $item->id)
+                                            <option value="{{ $item->id }}">{{ $item->name_uz }}</option>
+                                            @endif
+                                        @endforeach
+                                      </select>
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row mb-4">
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Product Uz</label>
+                                    <div class="col-sm-12 col-md-7">
+                                      <input type="text" class="form-control @error('product_uz') is-invalid
+                                      @enderror" name="product_uz" value="{{ $product->product_uz }}">
+                                       @error('product_uz') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row mb-4">
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Product En</label>
+                                    <div class="col-sm-12 col-md-7">
+                                      <input type="text" class="form-control @error('product_en') is-invalid
+                                      @enderror" name="product_en" value="{{ $product->product_en }}">
+                                       @error('product_en') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row mb-4">
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Price UZS</label>
+                                    <div class="col-sm-12 col-md-7">
+                                      <input type="text" class="form-control @error('price_uzs') is-invalid
+                                      @enderror" name="price_uzs" value="{{ $product->price_uzs }}">
+                                       @error('price_uzs') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row mb-4">
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Price USD</label>
+                                    <div class="col-sm-12 col-md-7">
+                                      <input type="text" class="form-control @error('price_usd') is-invalid
+                                      @enderror" name="price_usd" value="{{ $product->price_usd }}">
+                                       @error('price_usd') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row mb-4">
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Title Uz</label>
+                                    <div class="col-sm-12 col-md-7">
+                                      <input type="text" class="form-control @error('title_uz') is-invalid
+                                      @enderror" name="title_uz" value="{{ $product->title_uz }}">
+                                       @error('title_uz') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row mb-4">
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Title En</label>
+                                    <div class="col-sm-12 col-md-7">
+                                      <input type="text" class="form-control @error('title_en') is-invalid
+                                      @enderror" name="title_en" value="{{ $product->title_en }}">
+                                       @error('title_en') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row mb-4">
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Description UZ</label>
+                                    <div class="col-sm-12 col-md-7">
+                                      <textarea class="form-control @error('description_uz') is-invalid
+                                      @enderror" name="description_uz" value="{{ $product->description_uz }}">{{ $product->description_uz }}</textarea>
+                                      @error('description_uz') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row mb-4">
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Description En</label>
+                                    <div class="col-sm-12 col-md-7">
+                                        <textarea class="form-control @error('description_en') is-invalid
+                                        @enderror" name="description_en" value="{{ $product->description_en }}">{{ $product->description_en }}</textarea>
+                                      @error('description_en') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row mb-4">
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Images 1</label>
+                                    <div class="col-sm-12 col-md-7">
+                                      <div id="image-preview" class="image-preview">
+                                        <label for="image-upload" id="image-label">Rasmni tanlang</label>
+                                        <input type="file" name="img1" id="image-upload" />
+                                      </div>
+                                      <img alt="image" src="/images/{{ $product->img1 }}" width="59">
+                                      @error('img1') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row mb-4">
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Images 2</label>
+                                    <div class="col-sm-12 col-md-7">
+                                      <div id="image-preview" class="image-preview">
+                                        <label for="image-upload" id="image-label">Rasmni tanlang</label>
+                                        <input type="file" name="img2" id="image-upload" />
+                                      </div>
+                                      <img alt="image" src="/images/{{ $product->img2 }}" width="59">
+                                      @error('img2') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row mb-4">
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Images 3</label>
+                                    <div class="col-sm-12 col-md-7">
+                                      <div id="image-preview" class="image-preview">
+                                        <label for="image-upload" id="image-label">Rasmni tanlang</label>
+                                        <input type="file" name="img3" id="image-upload" />
+                                      </div>
+                                      <img alt="image" src="/images/{{ $product->img3 }}" width="59">
+                                      @error('img3') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row mb-4">
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Images 4</label>
+                                    <div class="col-sm-12 col-md-7">
+                                      <div id="image-preview" class="image-preview">
+                                        <label for="image-upload" id="image-label">Rasmni tanlang</label>
+                                        <input type="file" name="img4" id="image-upload" />
+                                      </div>
+                                      <img alt="image" src="/images/{{ $product->img4 }}" width="59">
+                                      @error('img4') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                                    </div>
+                                  </div>
+
+                                  <div class="form-group row mb-4">
+                                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Images 5</label>
+                                    <div class="col-sm-12 col-md-7">
+                                      <div id="image-preview" class="image-preview">
+                                        <label for="image-upload" id="image-label">Rasmni tanlang</label>
+                                        <input type="file" name="img5" id="image-upload" />
+                                      </div>
+                                      <img alt="image" src="/images/{{ $product->img5 }}" width="59">
+                                      @error('img5') <div class="indvalid-feedback">{{ $message }}</div> @enderror
+                                    </div>
+                                  </div>
+
+
+                                    <div class="form-group row mb-4">
+                                        <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
+                                        <div class="col-sm-12 col-md-7">
+                                            <button class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </div>
+                            </form>
+                        </div>
                     </div>
-
-                    <form class="create__inputs" action="{{route('products.update', $product[0]->id)}}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-
-                        <strong>Nomi Uz :</strong>
-                        <input type="text" name="name_uz" class="form-control" value="{{$product[0]->name_uz}}"> <br>
-
-                        <strong>Nomi Ru :</strong>
-                        <input type="text" name="name_ru" class="form-control" value="{{$product[0]->name_ru}}"> <br>
-
-                        <strong>Nomi Eng :</strong>
-                        <input type="text" name="name_en" class="form-control" value="{{$product[0]->name_en}}"> <br>
-
-                        <strong> Kategoriyasi :</strong>
-
-                        <select name="category" class="form-control">
-                            <option value="{{$product[0]->category}}">{{$product[0]->category}}</option>
-                            @foreach($category as $c)
-                            <option value="{{$c->id}}">{{$c->id}}. {{$c->name_uz}}</option>
-                            @endforeach
-                        </select> <br>
-
-                        <strong>Product :</strong>
-                        <input type="text" name="product" class="form-control" value="{{$product[0]->product}}"> <br>
-
-                        <strong>Model :</strong>
-                        <input type="text" name="model" class="form-control" value="{{$product[0]->model}}"> <br>
-
-                        <strong>Narxi So'mda :</strong>
-                        <input type="text" name="price_sum" class="form-control" value="{{$product[0]->price_sum}}"> <br>
-
-                        <strong>Narxi $ USD :</strong>
-                        <input type="text" name="price_usd" class="form-control" value="{{$product[0]->price_usd}}"> <br>
-
-                        <strong>Qisqa ma'lumot Uz :</strong>
-                        <input type="text" name="title_uz" class="form-control" value="{{$product[0]->title_uz}}"> <br>
-
-                        <strong>Qisqa ma'lumot Ru :</strong>
-                        <input type="text" name="title_ru" class="form-control" value="{{$product[0]->title_ru}}"> <br>
-
-                        <strong>Qisqa ma'lumot Eng :</strong>
-                        <input type="text" name="title_en" class="form-control" value="{{$product[0]->title_en}}"> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea"><b>Parametr UZ</b></label>
-                        <textarea id="mytextarea" name="parameter_uz" value="{{ $product[0]->parameter_uz }}">{{ old('parameter_uz') ? old('parameter_uz') : $product[0]->parameter_uz }}</textarea>
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea1"><b>Parametr Ru</b></label>
-                        <textarea id="mytextarea1" name="parameter_ru">{{ old('parameter_ru') ? old('parameter_ru') : $product[0]->parameter_ru }}</textarea>
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea13"><b>Parametr Eng</b></label>
-                        <textarea id="mytextarea13" name="parameter_en">{{ old('parameter_en') ? old('parameter_en') : $product[0]->parameter_en }}</textarea>
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea2"><b>Qo'shimcha ma'lumot UZ</b></label>
-                        <textarea id="mytextarea2" name="info_uz" value="{{$product[0]->info_uz}}">{{ old('info_uz') ? old('info_uz') : $product[0]->info_uz }}</textarea>
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea3"><b>Qo'shimcha ma'lumot Ru</b></label>
-                        <textarea id="mytextarea3" name="info_ru" value="{{$product[0]->info_ru}}">{{ old('info_ru') ? old('info_ru') : $product[0]->info_ru }}</textarea>
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea14"><b>Qo'shimcha ma'lumot Eng</b></label>
-                        <textarea id="mytextarea14" name="info_en" value="{{$product[0]->info_en}}">{{ old('info_en') ? old('info_en') : $product[0]->info_en }}</textarea>
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea4"><b>Tavsif UZ</b></label>
-                        <textarea id="mytextarea4" name="description_uz" value="{{$product[0]->description_uz}}">{{ old('description_uz') ? old('description_uz') : $product[0]->description_uz }}</textarea>
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea5"><b>Tavsif Ru</b></label>
-                        <textarea id="mytextarea5" name="description_ru" value="{{$product[0]->description_ru}}">{{ old('description_ru') ? old('description_ru') : $product[0]->description_ru }}</textarea>
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea15"><b>Tavsif Eng</b></label>
-                        <textarea id="mytextarea15" name="description_en" value="{{$product[0]->description_en}}">{{ old('description_en') ? old('description_en') : $product[0]->description_en }}</textarea>
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea6"><b>Yetkazib berish UZ</b></label>
-                        <textarea id="mytextarea6" name="delivery_uz" value="{{$product[0]->delivery_uz}}">{{ old('delivery_uz') ? old('delivery_uz') : $product[0]->delivery_uz }}</textarea>
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea7"><b>Yetkazib berish Ru</b> </label>
-                        <textarea id="mytextarea7" name="delivery_ru" value="{{$product[0]->delivery_ru}}">{{ old('delivery_ru') ? old('delivery_ru') : $product[0]->delivery_ru }}</textarea>
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea16"><b>Yetkazib berish Eng</b> </label>
-                        <textarea id="mytextarea16" name="delivery_en" value="{{$product[0]->delivery_en}}">{{ old('delivery_en') ? old('delivery_en') : $product[0]->delivery_en }}</textarea>
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea8"><b>To'lov UZ</b></label>
-                        <textarea id="mytextarea8" name="payment_uz" value="{{$product[0]->payment_uz}}">{{ old('payment_uz') ? old('payment_uz') : $product[0]->payment_uz }}</textarea>
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea9"> <b>To'lov Ru</b></label>
-                        <textarea id="mytextarea9" name="payment_ru" value="{{$product[0]->payment_ru}}">{{ old('payment_ru') ? old('payment_ru') : $product[0]->payment_ru }}</textarea>
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea17"> <b>To'lov Eng</b></label>
-                        <textarea id="mytextarea17" name="payment_en" value="{{$product[0]->payment_en}}">{{ old('payment_en') ? old('payment_en') : $product[0]->payment_en }}</textarea>
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea10"><b>Kafolat UZ</b></label>
-                        <textarea id="mytextarea10" name="warranty_uz" value="{{$product[0]->warranty_uz}}">{{ old('warranty_uz') ? old('warranty_uz') : $product[0]->warranty_uz }}</textarea>
-                        </div> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea11"><b>Kafolat Ru</b></label>
-                        <textarea id="mytextarea11" name="warranty_ru" value="{{$product[0]->warranty_ru}}">{{ old('warranty_ru') ? old('warranty_ru') : $product[0]->warranty_ru }}</textarea>
-                        </div> <br> <br> <br>
-
-                        <div class="col-xs-12 mt-5 col-sm-12 col-md-12 uzb-intput">
-                        <label for="mytextarea18"><b>Kafolat Eng</b></label>
-                        <textarea id="mytextarea18" name="warranty_en" value="{{$product[0]->warranty_en}}">{{ old('warranty_en') ? old('warranty_en') : $product[0]->warranty_en }}</textarea>
-                        </div> <br> <br> <br>
-
-                        <strong>Video 1 :</strong>
-                        <input type="text" name="video1" class="form-control" value="{{$product[0]->video1}}"> <br>
-                        <div class="col-md-6">
-                            {!!$product[0]->video1!!}
-                         </div><br>
-                        
-
-                        <strong>Video 2 :</strong>
-                        <input type="text" name="video2" class="form-control" value="{{$product[0]->video2}}"> <br>
-                        <div class="col-md-6">
-                            {!!$product[0]->video2!!}
-                         </div><br>
-                        
-
-                        <strong>Video 3 :</strong>
-                        <input type="text" name="video3" class="form-control" value="{{$product[0]->video3}}"> <br>
-                        <div class="col-md-6">
-                            {!!$product[0]->video3!!}
-                         </div><br>
-                        
-
-                        <strong>Rasm 1</strong>
-                        <img src="{{URL::to($product[0]->img1)}}" width="100px">
-                        <input type="file" name="img1" class="form-control" value="{{$product[0]->img1}}"> <br>
-
-                        <strong>Rasm 2</strong>
-                        <img src="{{URL::to($product[0]->img2)}}" width="100px">
-                        <input type="file" name="img2" class="form-control" value="{{$product[0]->img2}}"> <br>
-
-                        <strong>Rasm 3</strong>
-                        <img src="{{URL::to($product[0]->img3)}}" width="100px">
-                        <input type="file" name="img3" class="form-control" value="{{$product[0]->img3}}"> <br>
-
-                        <strong>Rasm 4</strong>
-                        <img src="{{URL::to($product[0]->img4)}}" width="100px">
-                        <input type="file" name="img4" class="form-control" value="{{$product[0]->img4}}"> <br>
-
-                        <strong>Rasm 5</strong>
-                        <img src="{{URL::to($product[0]->img5)}}" width="100px">
-                        <input type="file" name="img5" class="form-control" value="{{$product[0]->img5}}"> <br>
-                        
-
-                        <input type="submit" value="Submit">
-
-                    </form>
                 </div>
-                
             </div>
-        </main>
-        <!-- MAIN -->
 
-        <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+        </div>
+    </section>
+
+@endsection
+@section('js')
+    <script src="//cdn.ckeditor.com/4.19.0/standard/ckeditor.js"></script>
+    {{--
     <script>
-      tinymce.init({
-        selector: '#mytextarea'
-      });
-      tinymce.init({
-        selector: '#mytextarea1'
-      });
-      tinymce.init({
-        selector: '#mytextarea2'
-      });
+        $('ckeditor').ckeditor();
+    </script> --}}
 
-      tinymce.init({
-        selector: '#mytextarea3'
-      });
-
-      tinymce.init({
-        selector: '#mytextarea4'
-      });
-      tinymce.init({
-        selector: '#mytextarea5'
-      });
-      tinymce.init({
-        selector: '#mytextarea6'
-      });
-
-      tinymce.init({
-        selector: '#mytextarea7'
-      });
-      tinymce.init({
-        selector: '#mytextarea8'
-      });
-      tinymce.init({
-        selector: '#mytextarea9'
-      });
-
-      tinymce.init({
-        selector: '#mytextarea10'
-      });
-      tinymce.init({
-        selector: '#mytextarea11'
-      });
-      tinymce.init({
-        selector: '#mytextarea12'
-      });
-      tinymce.init({
-
-        selector: '#mytextarea13'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea14'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea15'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea16'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea17'
-
-      });
-
-      tinymce.init({
-
-        selector: '#mytextarea18'
-
-      });
+    <script>
+        CKEDITOR.replace('description_uz', {
+        filebrowserUploadUrl: "{{route('admin.upload', ['_token' => csrf_token() ])}}",
+        filebrowserUploadMethod: 'form'
+        });
+        CKEDITOR.replace('description_en', {
+        filebrowserUploadUrl: "{{route('admin.upload', ['_token' => csrf_token() ])}}",
+        filebrowserUploadMethod: 'form'
+        });
     </script>
+    <script src="/admin/assets/bundles/select2/dist/js/select2.full.min.js"></script>
 @endsection

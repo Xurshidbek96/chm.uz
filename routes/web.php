@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PagesController;
-use Illuminate\Auth\Middleware\Authenticate;
+use App\Http\Controllers\PagesController ;
+use App\Http\Controllers\Admin\CategoryController ;
+use App\Http\Controllers\Admin\ProductController ;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,41 +17,37 @@ use Illuminate\Auth\Middleware\Authenticate;
 |
 */
 
-Route::get('/route_cache', [PagesController::class, 'clearRoute']);
-
 Route::get('/', [PagesController::class, 'index']);
-Route::get('/about', [PagesController::class, 'about']);
-Route::get('/category/{id}', [PagesController::class, 'category']);
-Route::get('/contact', [PagesController::class, 'contact']);
-Route::get('/news', [PagesController::class, 'news']);
-Route::get('/new/{id}', [PagesController::class, 'new']);
-Route::get('/single/{id}', [PagesController::class, 'single']);
-Route::get('/video', [PagesController::class, 'videos']);
-
-Route::post('/send_order', [PagesController::class, 'send_order'])->name('send_order');
-Route::post('/send_sms', [PagesController::class, 'send_sms'])->name('send_sms');
-
-Route::get('/search/', [PagesController::class, 'search'])->name('search');
+Route::get('/category/{id}', [PagesController::class, 'category'])->name('category');
+Route::get('/single', [PagesController::class, 'single'])->name('single');
+Route::get('/about', [PagesController::class, 'about'])->name('about');
+Route::get('/contact', [PagesController::class, 'contact'])->name('contact');
+Route::get('/search', [PagesController::class, 'search'])->name('search');
 
 
-Auth::routes();
+// Admin routes
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::prefix('admin/')->group(function(){
 
-Route::group(['middleware' => 'auth'], function () {
+    Route::get('home', function(){
+        return view('admin.layouts.dashboard');
+    })->name('admin.home');
 
-    Route::get('/a-panel', function () {
-        return view('admin.layouts.home');
-    });
-
-    Route::resource('products', ProductController::class);
-    Route::resource('blogs', BlogController::class);
-    Route::resource('partners', PartnerController::class);
-    Route::resource('shops', ShopController::class);
-    Route::resource('banners', BannerController::class);
     Route::resource('categories', CategoryController::class);
-    Route::resource('abouts', AboutController::class);
-    Route::resource('sms', SmsController::class);
-    Route::resource('orders', OrderController::class);
+    Route::resource('products', ProductController::class);
+    Route::post('product-image-upload', [ProductController::class, 'upload'])->name('admin.upload');
 
 });
+
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
