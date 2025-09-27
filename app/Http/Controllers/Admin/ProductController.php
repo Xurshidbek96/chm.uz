@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductRequest;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
@@ -45,11 +46,14 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        $this->productService->store($request);
-
-        return redirect()->route('products.index')->with('success', 'Create done');
+        try {
+            $product = $this->productService->createProduct($request->validated());
+            return redirect()->route('admin.products.index')->with('success', 'Product created successfully');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Error creating product: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -87,7 +91,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $this->productService->update($id, $request);
-        return redirect()->route('products.index')->with('success', 'Update done');
+        return redirect()->route('admin.products.index')->with('success', 'Update done');
     }
 
     /**
@@ -99,7 +103,7 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $this->productService->destroy($id);
-        return redirect()->route('products.index')->with('success', 'Delete done');
+        return redirect()->route('admin.products.index')->with('success', 'Delete done');
     }
 
     public function upload(Request $request, $id)

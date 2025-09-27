@@ -1,10 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PagesController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PagesController ;
-use App\Http\Controllers\Admin\CategoryController ;
-use App\Http\Controllers\Admin\ProductController ;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,29 +15,16 @@ use App\Http\Controllers\Admin\ProductController ;
 |
 */
 
-Route::get('/', [PagesController::class, 'index']);
-Route::get('/category/{id}', [PagesController::class, 'category'])->name('category');
-Route::get('/single', [PagesController::class, 'single'])->name('single');
+// Public Frontend Routes
+Route::get('/', [PagesController::class, 'index'])->name('home');
+Route::get('/category/{category:slug}', [PagesController::class, 'category'])->name('category');
+Route::get('/product/{product:slug}', [PagesController::class, 'single'])->name('product.show');
 Route::get('/about', [PagesController::class, 'about'])->name('about');
 Route::get('/contact', [PagesController::class, 'contact'])->name('contact');
+Route::post('/contact', [PagesController::class, 'storeContact'])->name('contact.store');
 Route::get('/search', [PagesController::class, 'search'])->name('search');
 
-
-// Admin routes
-
-Route::prefix('admin/')->group(function(){
-
-    Route::get('home', function(){
-        return view('admin.layouts.dashboard');
-    })->name('admin.home');
-
-    Route::resource('categories', CategoryController::class);
-    Route::resource('products', ProductController::class);
-    Route::post('product-image-upload', [ProductController::class, 'upload'])->name('admin.upload');
-
-});
-
-
+// User Dashboard
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

@@ -3,130 +3,133 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
+use App\Services\CategoryService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
+    protected CategoryService $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request): View
     {
-        $categories = Category::paginate(10);
-
+        $categories = $this->categoryService->getPaginatedCategories($request);
+        
         return view('admin.categories.index', compact('categories'));
     }
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(): View
     {
         return view('admin.categories.create');
     }
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request): RedirectResponse
     {
-        request()->validate(array(
-            'img' => 'required|mimes:png,jpg|max:2048',
-        ));
-
-        $requestData = $request->all();
-        $requestData['slug'] = \Str::slug($requestData['name_uz']);
-
-        if($request->hasFile('img'))
-        {
-            $file = $request->file('img');
-            $imageName = time().'-'.$file->getClientOriginalName();
-            $file->move('images/', $imageName);
-            $requestData['img'] = $imageName;
+        try {
+            $this->categoryService->createCategory($request->validated());
+            
+            return redirect()
+                ->route('admin.categories.index')
+                ->with('success', 'Kategoriya muvaffaqiyatli yaratildi');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Kategoriya yaratishda xatolik yuz berdi: ' . $e->getMessage());
         }
-
-        Category::create($requestData);
-        // return $requestData['slug'];
-        return redirect()->route('categories.index')->with('success', 'Create done');
     }
 
     /**
      * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Category $category): View
     {
-        $category = Category::find($id);
+        $category->load(['products' => function ($query) {
+            $query->active()->latest()->take(10);
+        }]);
+        
         return view('admin.categories.show', compact('category'));
     }
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Category $category): View
     {
-        $category = Category::find($id);
         return view('admin.categories.edit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CategoryRequest $request, Category $category): RedirectResponse
     {
-        $requestData = $request->all();
-        $requestData['slug'] = \Str::slug($request->name_uz);
-
-        if($request->hasFile('img'))
-        {
-            $this->unlink_file($id);
-
-            $file = $request->file('img');
-            $imageName = time().'-'.$file->getClientOriginalName();
-            $imagePath = $file->move('images/', $imageName);
-            $requestData['img'] = $imageName;
-
+        try {
+            $this->categoryService->updateCategory($category, $request->validated());
+            
+            return redirect()
+                ->route('admin.categories.index')
+                ->with('success', 'Kategoriya muvaffaqiyatli yangilandi');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Kategoriya yangilashda xatolik yuz berdi: ' . $e->getMessage());
         }
-
-        Category::find($id)->update($requestData);
-        return redirect()->route('categories.index')->with('success', 'Update done');
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Category $category): RedirectResponse
     {
-        $this->unlink_file($id);
-        Category::find($id)->delete();
-        return redirect()->route('categories.index')->with('success', 'Delete done');
+        try {
+            $this->categoryService->deleteCategory($category);
+            
+            return redirect()
+                ->route('admin.categories.index')
+                ->with('success', 'Kategoriya muvaffaqiyatli o\'chirildi');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Kategoriya o\'chirishda xatolik yuz berdi: ' . $e->getMessage());
+        }
     }
 
-    // extra functions
-    public function unlink_file($id){
-        $category = Category::find($id);
-        if(isset($category->img) && file_exists(public_path('/images/'.$category->img))){
-            unlink(public_path('/images/'.$category->img));
+    /**
+     * Toggle category status.
+     */
+    public function toggleStatus(Category $category): RedirectResponse
+    {
+        try {
+            $this->categoryService->toggleStatus($category);
+            
+            $status = $category->status ? 'faollashtirildi' : 'o\'chirildi';
+            
+            return redirect()
+                ->back()
+                ->with('success', "Kategoriya holati {$status}");
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Kategoriya holatini o\'zgartirishda xatolik yuz berdi: ' . $e->getMessage());
         }
     }
 }
